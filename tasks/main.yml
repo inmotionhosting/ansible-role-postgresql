@@ -1,10 +1,19 @@
 ---
 # tasks file for ansible-role-postgresql
 
+- name: (PostgreSQL) Include variables and set facts
+  include: facts.yml
+
+- name: (Ubuntu) Update APT cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
 # Install postgresql-server
 - name: (PostgreSQL) Install PostgreSQL package.
   package:
-    name: postgresql-server
+    name: {{ postgres_package }}
     state: present
 
 # Check for the existence of {{ pgsql_data_dir }}/PG_VERSION to know if pgsql_data_dir
