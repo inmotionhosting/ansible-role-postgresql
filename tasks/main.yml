@@ -13,7 +13,7 @@
 # Install postgresql-server
 - name: (PostgreSQL) Install PostgreSQL package.
   package:
-    name: {{ postgres_package }}
+    name: "{{ postgres_package }}"
     state: present
 
 # Check for the existence of {{ pgsql_data_dir }}/PG_VERSION to know if pgsql_data_dir
