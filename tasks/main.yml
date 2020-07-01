@@ -31,11 +31,16 @@
     not pg_version.stat.exists
 
 - name: (CentOS 8) Initialize postgresql
-  command: "/usr/bin/postgresql-setup --initdb"
+  command: "/usr/bin/initdb -D /var/lib/pgsql/data --no-locale -E 'UTF-8'"
+  become: true
+  become_user: postgres
   when: >-
     (ansible_distribution == "CentOS"
     and ansible_distribution_version is version('8.0', '>=')) and
     not pg_version.stat.exists
+  #failed_when: false
+
+#- debug: msg="{{ lookup('file', '/var/lib/pgsql/initdb_postgresql.log') }}"
 
 # Allow database authentication via user/password
 - name: (PostgreSQL) Configure md5 authentication
