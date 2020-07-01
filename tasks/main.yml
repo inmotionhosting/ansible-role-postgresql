@@ -23,9 +23,19 @@
     path: /var/lib/pgsql/data/PG_VERSION
   register: pg_version
 
-- name: (PostgreSQL) Initialize postgresql
+- name: (CentOS 7) Initialize postgresql
   command: "/usr/bin/postgresql-setup initdb"
-  when: not pg_version.stat.exists
+  when: >-
+    (ansible_distribution == "CentOS"
+    and ansible_distribution_version is version('8.0', '<=')) and
+    not pg_version.stat.exists
+
+- name: (CentOS 8) Initialize postgresql
+  command: "/usr/bin/postgresql-setup --initdb"
+  when: >-
+    (ansible_distribution == "CentOS"
+    and ansible_distribution_version is version('8.0', '>=')) and
+    not pg_version.stat.exists
 
 # Allow database authentication via user/password
 - name: (PostgreSQL) Configure md5 authentication
