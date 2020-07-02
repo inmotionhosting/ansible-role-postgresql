@@ -4,3 +4,7 @@
 - name: (RedHat) Include os_family vars
   include_vars: RedHat.yml
   when: ansible_os_family == "RedHat"
+
+- name: (Debian) Include os_family vars
+  include_vars: Debian.yml
+  when: ansible_os_family == "Debian"

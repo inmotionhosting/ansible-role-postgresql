@@ -2,3 +2,4 @@
 # defaults file for ansible-role-postgresql
 
 postgres_package: postgresql
+postgres_user: postgres

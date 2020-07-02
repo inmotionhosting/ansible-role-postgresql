@@ -20,20 +20,20 @@
 # has been initialized
 - name: (PostgreSQL) Check if database is initialized
   stat:
-    path: /var/lib/pgsql/data/PG_VERSION
+    path: "{{ postgres_data_dir }}/PG_VERSION"
   register: pg_version
 
 - name: (CentOS 7) Initialize postgresql
   command: "/usr/bin/postgresql-setup initdb"
   when: >-
     (ansible_distribution == "CentOS"
-    and ansible_distribution_version is version('8.0', '<=')) and
+    and ansible_distribution_version is version('8.0', '<')) and
     not pg_version.stat.exists
 
 - name: (CentOS 8) Initialize postgresql
   command: "/usr/bin/initdb -D /var/lib/pgsql/data --no-locale -E 'UTF-8'"
   become: true
-  become_user: postgres
+  become_user: "{{ postgres_user }}"
   when: >-
     (ansible_distribution == "CentOS"
     and ansible_distribution_version is version('8.0', '>=')) and
@@ -46,9 +46,9 @@
 - name: (PostgreSQL) Configure md5 authentication
   template:
     src: pg_hba.conf.j2
-    dest: /var/lib/pgsql/data/pg_hba.conf
-    owner: postgres
-    group: postgres
+    dest: "{{ postgres_conf_dir }}/pg_hba.conf"
+    owner: "{{ postgres_user }}"
+    group: "{{ postgres_user }}"
     mode: 0600
   notify:
     - restart postgresql
