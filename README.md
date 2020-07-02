@@ -3,6 +3,8 @@ inmotionhosting.postgresql
 
 Modular Ansible Role for deploying and configuring PostgreSQL
 
+[![Build Status](https://travis-ci.org/inmotionhosting/ansible-role-postgresql.png?branch=master)](https://travis-ci.org/inmotionhosting/ansible-role-postgresql)
+
 
 Requirements
 ------------
