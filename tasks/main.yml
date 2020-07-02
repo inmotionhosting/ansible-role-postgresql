@@ -40,7 +40,27 @@
     not pg_version.stat.exists
   #failed_when: false
 
-#- debug: msg="{{ lookup('file', '/var/lib/pgsql/initdb_postgresql.log') }}"
+- name: Gather the rpm package facts
+  package_facts:
+    manager: auto
+
+- name: Print the rpm package facts
+  debug:
+    var: ansible_facts.packages
+
+- name: (Debian) Set and sanitize PostgreSQL version
+  set_fact:
+    pg_version: >-
+      {{ ansible_facts.packages['postgresql'][0].version
+      | regex_replace('^.*:', '')
+      | regex_replace('\+.*$', '') }}
+  when: when: ansible_os_family == "Debian"
+
+- name: (Debian) Set and sanitize PHP facts
+  set_fact:
+    postgres_data_dir: /var/lib/postgresql/{{ pg_version }}/main
+    postgres_conf_dir: /etc/postgresql/{{ pg_version }}/main
+  when: when: ansible_os_family == "Debian"
 
 # Allow database authentication via user/password
 - name: (PostgreSQL) Configure md5 authentication
