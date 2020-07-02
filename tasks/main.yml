@@ -16,8 +16,8 @@
     name: "{{ postgres_package }}"
     state: present
 
-# Check for the existence of {{ pgsql_data_dir }}/PG_VERSION to know if pgsql_data_dir
-# has been initialized
+# Check for the existence of {{ pgsql_data_dir }}/PG_VERSION
+# to know if pgsql_data_dir has been initialized
 - name: (PostgreSQL) Check if database is initialized
   stat:
     path: "{{ postgres_data_dir }}/PG_VERSION"
@@ -38,15 +38,10 @@
     (ansible_distribution == "CentOS"
     and ansible_distribution_version is version('8.0', '>=')) and
     not pg_version.stat.exists
-  #failed_when: false
 
 - name: Gather the rpm package facts
   package_facts:
     manager: auto
-
-- name: Print the rpm package facts
-  debug:
-    var: ansible_facts.packages
 
 - name: (Debian) Set and sanitize PostgreSQL version
   set_fact:
@@ -54,7 +49,7 @@
       {{ ansible_facts.packages['postgresql'][0].version
       | regex_replace('^.*:', '')
       | regex_replace('\+.*$', '') }}
-  when: when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian"
 
 - name: (Debian) Set and sanitize PHP facts
   set_fact:
