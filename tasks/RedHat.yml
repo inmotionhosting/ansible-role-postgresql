@@ -2,7 +2,7 @@
 
 # Check for the existence of {{ pgsql_data_dir }}/PG_VERSION
 # to know if pgsql_data_dir has been initialized
-- name: (PostgreSQL) Check if database is initialized
+- name: (RedHat) Check if database is initialized
   stat:
     path: "{{ postgres_data_dir }}/PG_VERSION"
   register: pg_version

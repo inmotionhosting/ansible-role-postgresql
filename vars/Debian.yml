@@ -1,6 +1,8 @@
 ---
 # vars file for ansible-role-postgresql
 
-postgres_package: postgresql
+postgres_packages:
+  - postgresql
+  - python-psycopg2
 postgres_data_dir: /var/lib/postgresql/9.6/main
 postgres_conf_dir: /etc/postgresql/9.6/main

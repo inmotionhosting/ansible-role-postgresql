@@ -12,7 +12,7 @@
 
 - name: (PostgreSQL) Install PostgreSQL package
   package:
-    name: "{{ postgres_package }}"
+    name: "{{ postgres_packages }}"
     state: present
 
 - name: (PostgreSQL) Handle errata

@@ -1,0 +1,6 @@
+---
+# vars file for ansible-role-postgresql
+
+postgres_packages:
+  - postgresql
+  - python3-psycopg2
