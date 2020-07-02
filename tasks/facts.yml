@@ -12,10 +12,10 @@
     - ansible_distribution_major_version >= "8"
 
 - name: (Ubuntu 20.04) Include os_family vars
-  include_vars: "Ubuntu-20.yml"
+  include_vars: "Debian-LTS.yml"
   when:
     - ansible_distribution == "Ubuntu"
-    - ansible_distribution_version == "20.04"
+    - ansible_distribution_version <= "18.04"
 
 - name: (PostgreSQL) Set and sanitize facts
   set_fact:
