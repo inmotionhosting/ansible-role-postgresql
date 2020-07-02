@@ -14,7 +14,12 @@ Requirements
 Role Variables
 --------------
 
-
+| Variable | Description |
+| -------- | ----------- |
+| postgres_package | Default: `postgresql-server`
+| postgres_data_dir | Default: `/var/lib/pgsql/data`
+| postgres_conf_dir | Default: `/var/lib/pgsql/data` (Same as postgres_data_dir)
+| postgres_user | Default: `postgres`
 
 Dependencies
 ------------

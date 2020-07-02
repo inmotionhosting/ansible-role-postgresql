@@ -4,58 +4,19 @@
 - name: (PostgreSQL) Include variables and set facts
   include: facts.yml
 
-- name: (Ubuntu) Update APT cache
+- name: (Debian) Update APT cache
   apt:
     update_cache: yes
     cache_valid_time: 3600
   when: ansible_os_family == "Debian"
 
-# Install postgresql-server
-- name: (PostgreSQL) Install PostgreSQL package.
+- name: (PostgreSQL) Install PostgreSQL package
   package:
     name: "{{ postgres_package }}"
     state: present
 
-# Check for the existence of {{ pgsql_data_dir }}/PG_VERSION
-# to know if pgsql_data_dir has been initialized
-- name: (PostgreSQL) Check if database is initialized
-  stat:
-    path: "{{ postgres_data_dir }}/PG_VERSION"
-  register: pg_version
-
-- name: (CentOS 7) Initialize postgresql
-  command: "/usr/bin/postgresql-setup initdb"
-  when: >-
-    (ansible_distribution == "CentOS"
-    and ansible_distribution_version is version('8.0', '<')) and
-    not pg_version.stat.exists
-
-- name: (CentOS 8) Initialize postgresql
-  command: "/usr/bin/initdb -D /var/lib/pgsql/data --no-locale -E 'UTF-8'"
-  become: true
-  become_user: "{{ postgres_user }}"
-  when: >-
-    (ansible_distribution == "CentOS"
-    and ansible_distribution_version is version('8.0', '>=')) and
-    not pg_version.stat.exists
-
-- name: Gather the rpm package facts
-  package_facts:
-    manager: auto
-
-- name: (Debian) Set and sanitize PostgreSQL version
-  set_fact:
-    pg_version: >-
-      {{ ansible_facts.packages['postgresql'][0].version
-      | regex_replace('^.*:', '')
-      | regex_replace('\+.*$', '') }}
-  when: ansible_os_family == "Debian"
-
-- name: (Debian) Set and sanitize PHP facts
-  set_fact:
-    postgres_data_dir: /var/lib/postgresql/{{ pg_version }}/main
-    postgres_conf_dir: /etc/postgresql/{{ pg_version }}/main
-  when: ansible_os_family == "Debian"
+- name: (PostgreSQL) Handle errata
+  include: "{{ ansible_os_family }}.yml"
 
 # Allow database authentication via user/password
 - name: (PostgreSQL) Configure md5 authentication
