@@ -1,5 +1,7 @@
 ---
 # defaults file for ansible-role-postgresql
 
-postgres_package: postgresql
+postgres_package: postgresql-server
+postgres_data_dir: /var/lib/pgsql/data
+postgres_conf_dir: "{{ postgres_data_dir }}"
 postgres_user: postgres
