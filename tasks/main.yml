@@ -1,0 +1,36 @@
+---
+# tasks file for ansible-role-postgresql
+
+- name: (PostgreSQL) Include variables and set facts
+  include: facts.yml
+
+- name: (Debian) Update APT cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: (PostgreSQL) Install PostgreSQL package
+  package:
+    name: "{{ postgres_package }}"
+    state: present
+
+- name: (PostgreSQL) Handle errata
+  include: "{{ ansible_os_family }}.yml"
+
+# Allow database authentication via user/password
+- name: (PostgreSQL) Configure md5 authentication
+  template:
+    src: pg_hba.conf.j2
+    dest: "{{ postgres_conf_dir }}/pg_hba.conf"
+    owner: "{{ postgres_user }}"
+    group: "{{ postgres_user }}"
+    mode: 0600
+  notify:
+    - restart postgresql
+
+- name: (PostgreSQL) Start the postgreSQL service and enable on boot
+  service:
+    name: postgresql
+    state: started
+    enabled: yes

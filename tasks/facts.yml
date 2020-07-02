@@ -1,0 +1,33 @@
+---
+# tasks file for ansible-role-postgresql
+
+- name: (Debian) Include os_family vars
+  include_vars: Debian.yml
+  when: ansible_os_family == "Debian"
+
+- name: (PostgreSQL) Set and sanitize facts
+  set_fact:
+    postgres_package: >-
+      {{ postgres_package
+      if postgres_package is defined
+      and postgres_package is string
+      and postgres_package != 0
+      else "postgresql-server" }}
+    postgres_data_dir: >-
+      {{ postgres_data_dir
+      if postgres_data_dir is defined
+      and postgres_data_dir is string
+      and postgres_data_dir != 0
+      else "/var/lib/pgsql/data" }}
+    postgres_conf_dir: >-
+      {{ postgres_conf_dir
+      if postgres_conf_dir is defined
+      and postgres_conf_dir is string
+      and postgres_conf_dir != 0
+      else postgres_data_dir }}
+    postgres_user: >-
+      {{ postgres_user
+      if postgres_user is defined
+      and postgres_user is string
+      and postgres_user != 0
+      else "postgres" }}
