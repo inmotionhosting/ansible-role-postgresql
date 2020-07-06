@@ -5,13 +5,7 @@
   include_vars: Debian.yml
   when: ansible_os_family == "Debian"
 
-- name: (RedHat 8) Include os_family vars
-  include_vars: "RedHat-8.yml"
-  when:
-    - ansible_os_family == "RedHat"
-    - ansible_distribution_major_version >= "8"
-
-- name: (Ubuntu) Include os_family vars
+- name: (Ubuntu 16.04/18.04) Include os_family vars
   include_vars: "Debian-LTS.yml"
   when:
     - ansible_distribution == "Ubuntu"
