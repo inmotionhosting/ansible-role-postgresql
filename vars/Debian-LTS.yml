@@ -3,4 +3,4 @@
 
 postgres_packages:
   - postgresql
-  - python-psycopg2
+  - python3-psycopg2
