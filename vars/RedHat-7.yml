@@ -1,0 +1,6 @@
+---
+# defaults file for ansible-role-postgresql
+
+postgres_packages:
+  - postgresql-server
+  - python-psycopg2
