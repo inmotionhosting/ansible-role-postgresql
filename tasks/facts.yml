@@ -5,14 +5,14 @@
   include_vars: Debian.yml
   when: ansible_os_family == "Debian"
 
-- name: (RedHat 7) Include os_family vars
-  include_vars: "RedHat-7.yml"
-  when:
-    - ansible_os_family == "RedHat"
-    - ansible_distribution_major_version == "7"
-
 - name: (PostgreSQL) Set and sanitize facts
   set_fact:
+    postgres_package: >-
+      {{ postgres_package
+      if postgres_package is defined
+      and postgres_package is string
+      and postgres_package != 0
+      else "postgresql-server" }}
     postgres_data_dir: >-
       {{ postgres_data_dir
       if postgres_data_dir is defined
