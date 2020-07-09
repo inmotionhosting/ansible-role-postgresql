@@ -20,8 +20,20 @@
 
 - name: (PostgreSQL) Install PostgreSQL package
   package:
-    name: "{{ postgres_packages }}"
+    name: "{{ postgres_package }}"
     state: present
+
+- name: (PostgreSQL) Install Psycopg package
+  package:
+    name: python3-psycopg2
+    state: present
+  when: ansible_python_version is version('3.0', '>=')
+
+- name: (PostgreSQL) Install Psycopg package
+  package:
+    name: python-psycopg2
+    state: present
+  when: ansible_python_version is version('3.0', '<')
 
 - name: (PostgreSQL) Handle errata
   include: "{{ ansible_os_family }}.yml"
