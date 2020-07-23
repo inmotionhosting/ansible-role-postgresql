@@ -5,7 +5,7 @@
 - name: (RedHat) Check if database is initialized
   stat:
     path: "{{ postgres_data_dir }}/PG_VERSION"
-  register: pg_version
+  register: pg_init
 
 - name: (CentOS 7) Initialize postgresql
   command: "/usr/bin/postgresql-setup initdb"
@@ -13,7 +13,7 @@
   become_user: "{{ postgres_user }}"
   when: >-
     ansible_distribution_version is version('8.0', '<') and
-    not pg_version.stat.exists
+    not pg_init.stat.exists
 
 - name: (CentOS 8) Initialize postgresql
   command: "/usr/bin/initdb -D /var/lib/pgsql/data --no-locale -E 'UTF-8'"
@@ -21,4 +21,4 @@
   become_user: "{{ postgres_user }}"
   when: >-
     ansible_distribution_version is version('8.0', '>=') and
-    not pg_version.stat.exists
+    not pg_init.stat.exists

@@ -35,9 +35,6 @@
     state: present
   when: ansible_python_version is version('3.0', '<')
 
-- name: (PostgreSQL) Handle errata
-  include: "{{ ansible_os_family }}.yml"
-
 - name: Gather the rpm package facts
   package_facts:
     manager: auto
@@ -49,8 +46,13 @@
       | regex_replace('^.*:', '')
       | regex_replace('\+.*$', '') }}
 
-- debug:
-    var: pg_version
+- name: (PostgreSQL) Set authentication METHOD
+  set_fact:
+    postgres_auth: "md5"
+  when: pg_version is version('10.0', '<') 
+
+- name: (PostgreSQL) Handle errata
+  include: "{{ ansible_os_family }}.yml"
 
 # Allow database authentication via user/password
 - name: (PostgreSQL) Configure md5 authentication
