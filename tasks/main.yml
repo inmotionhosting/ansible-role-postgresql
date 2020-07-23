@@ -38,6 +38,20 @@
 - name: (PostgreSQL) Handle errata
   include: "{{ ansible_os_family }}.yml"
 
+- name: Gather the rpm package facts
+  package_facts:
+    manager: auto
+
+- name: (Debian) Set and sanitize PostgreSQL version
+  set_fact:
+    pg_version: >-
+      {{ ansible_facts.packages['postgresql'][0].version
+      | regex_replace('^.*:', '')
+      | regex_replace('\+.*$', '') }}
+
+- debug:
+    var: pg_version
+
 # Allow database authentication via user/password
 - name: (PostgreSQL) Configure md5 authentication
   template:
