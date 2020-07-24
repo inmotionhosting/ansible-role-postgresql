@@ -23,17 +23,33 @@
     name: "{{ postgres_package }}"
     state: present
 
-- name: (PostgreSQL) Install Psycopg package
+- name: (Python 3) Install Psycopg package
   package:
     name: python3-psycopg2
     state: present
   when: ansible_python_version is version('3.0', '>=')
 
-- name: (PostgreSQL) Install Psycopg package
+- name: (Python 2) Install Psycopg package
   package:
     name: python-psycopg2
     state: present
   when: ansible_python_version is version('3.0', '<')
+
+- name: (PostgreSQL) Gather the rpm package facts
+  package_facts:
+    manager: auto
+
+- name: (PostgreSQL) Set and sanitize PostgreSQL version
+  set_fact:
+    pg_version: >-
+      {{ ansible_facts.packages['postgresql'][0].version
+      | regex_replace('^.*:', '')
+      | regex_replace('\+.*$', '') }}
+
+- name: (PostgreSQL) Set authentication method
+  set_fact:
+    postgres_auth: "md5"
+  when: pg_version is version('10.0', '<')
 
 - name: (PostgreSQL) Handle errata
   include: "{{ ansible_os_family }}.yml"

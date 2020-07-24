@@ -1,16 +1,5 @@
 ---
 
-- name: Gather the rpm package facts
-  package_facts:
-    manager: auto
-
-- name: (Debian) Set and sanitize PostgreSQL version
-  set_fact:
-    pg_version: >-
-      {{ ansible_facts.packages['postgresql'][0].version
-      | regex_replace('^.*:', '')
-      | regex_replace('\+.*$', '') }}
-
 - name: (Debian) Set and sanitize PHP facts
   set_fact:
     postgres_data_dir: /var/lib/postgresql/{{ pg_version }}/main
