@@ -6,3 +6,6 @@ postgres_data_dir: /var/lib/pgsql/data
 postgres_conf_dir: "{{ postgres_data_dir }}"
 postgres_user: postgres
 postgres_auth: scram-sha-256
+
+postgres_systemd_restart: false
+systemd_restart_setting: on-failure

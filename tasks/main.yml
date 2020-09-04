@@ -65,6 +65,13 @@
   notify:
     - restart postgresql
 
+- name: Include systemd restart configuation
+  include: systemd.yml
+  when:  >-
+    ( postgres_systemd_restart|default(False)
+    or systemd_restart|default(False) )
+    and systemd_restart_setting is defined
+
 - name: (PostgreSQL) Start the postgreSQL service and enable on boot
   service:
     name: postgresql
