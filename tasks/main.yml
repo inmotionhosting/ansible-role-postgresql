@@ -55,7 +55,7 @@
   include: "{{ ansible_os_family }}.yml"
 
 # Allow database authentication via user/password
-- name: (PostgreSQL) Configure md5 authentication
+- name: (PostgreSQL) Configure authentication
   template:
     src: pg_hba.conf.j2
     dest: "{{ postgres_conf_dir }}/pg_hba.conf"
