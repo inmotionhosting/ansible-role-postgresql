@@ -16,7 +16,10 @@
     not pg_init.stat.exists
 
 - name: (CentOS 8) Initialize postgresql
-  command: "/usr/bin/initdb -D /var/lib/pgsql/data --no-locale -E 'UTF-8'"
+  command: >-
+    /usr/bin/initdb -D /var/lib/pgsql/data
+    --auth-host "{{ postgres_auth }}"
+    --no-locale -E 'UTF-8'
   become: true
   become_user: "{{ postgres_user }}"
   when: >-
