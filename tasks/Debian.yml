@@ -10,5 +10,6 @@
     path: "{{ postgres_conf_dir }}/postgresql.conf"
     regexp: "#password_encryption = md5"
     line: "password_encryption = {{ postgres_auth }}"
+    backrefs: yes
   notify:
     - restart postgresql
