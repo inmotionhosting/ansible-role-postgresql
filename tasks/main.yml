@@ -1,7 +1,7 @@
 ---
 # tasks file for ansible-role-postgresql
 
-- name: (PostgreSQL) Include variables and set facts
+- name: Include variables and set facts
   include: facts.yml
 
 - name: (Debian) Update APT cache
@@ -18,7 +18,7 @@
     - ansible_os_family == "RedHat"
     - ansible_distribution_major_version == "7"
 
-- name: (PostgreSQL) Install PostgreSQL package
+- name: Install PostgreSQL package
   package:
     name: "{{ postgres_package }}"
     state: present
@@ -35,27 +35,27 @@
     state: present
   when: ansible_python_version is version('3.0', '<')
 
-- name: (PostgreSQL) Gather the rpm package facts
+- name: Gather the rpm package facts
   package_facts:
     manager: auto
 
-- name: (PostgreSQL) Set and sanitize PostgreSQL version
+- name: Set and sanitize PostgreSQL version
   set_fact:
     pg_version: >-
       {{ ansible_facts.packages['postgresql'][0].version
       | regex_replace('^.*:', '')
       | regex_replace('\+.*$', '') }}
 
-- name: (PostgreSQL) Set authentication method
+- name: Set authentication method for legacy postgres
   set_fact:
     postgres_auth: "md5"
   when: pg_version is version('10.0', '<')
 
-- name: (PostgreSQL) Handle errata
+- name: Handle errata
   include: "{{ ansible_os_family }}.yml"
 
 # Allow database authentication via user/password
-- name: (PostgreSQL) Configure authentication
+- name: Configure authentication
   template:
     src: pg_hba.conf.j2
     dest: "{{ postgres_conf_dir }}/pg_hba.conf"
@@ -67,12 +67,12 @@
 
 - name: Include systemd restart configuation
   include: systemd.yml
-  when:  >-
+  when: >-
     ( postgres_systemd_restart|default(False)
     or systemd_restart|default(False) )
     and systemd_restart_setting is defined
 
-- name: (PostgreSQL) Start the postgreSQL service and enable on boot
+- name: Start the postgreSQL service and enable on boot
   service:
     name: postgresql
     state: started

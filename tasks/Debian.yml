@@ -2,10 +2,10 @@
 
 - name: (Debian) Set and sanitize Postgres facts
   set_fact:
-    postgres_data_dir: /var/lib/postgresql/{{ pg_version }}/main
-    postgres_conf_dir: /etc/postgresql/{{ pg_version }}/main
+    postgres_data_dir: "/var/lib/postgresql/{{ pg_version }}/main"
+    postgres_conf_dir: "/etc/postgresql/{{ pg_version }}/main"
 
-- name: (PostgreSQL) Configure authentication
+- name: Configure password encryption
   lineinfile:
     path: "{{ postgres_conf_dir }}/postgresql.conf"
     regexp: "#password_encryption = md5"
