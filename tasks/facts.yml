@@ -5,45 +5,44 @@
   include_vars: Debian.yml
   when: ansible_os_family == "Debian"
 
-- name: (PostgreSQL) Set and sanitize facts
+- name: Set lists of required variables
   set_fact:
-    postgres_package: >-
-      {{ postgres_package
-      if postgres_package is defined
-      and postgres_package is string
-      and postgres_package != 0
-      else "postgresql-server" }}
-    postgres_data_dir: >-
-      {{ postgres_data_dir
-      if postgres_data_dir is defined
-      and postgres_data_dir is string
-      and postgres_data_dir != 0
-      else "/var/lib/pgsql/data" }}
-    postgres_conf_dir: >-
-      {{ postgres_conf_dir
-      if postgres_conf_dir is defined
-      and postgres_conf_dir is string
-      and postgres_conf_dir != 0
-      else postgres_data_dir }}
-    postgres_user: >-
-      {{ postgres_user
-      if postgres_user is defined
-      and postgres_user is string
-      and postgres_user != 0
-      else "postgres" }}
+    postgres_required_strings:
+      - postgres_package
+      - postgres_conf_dir
+      - postgres_auth
+      - postgres_user
+      - postgres_data_dir
+      - postgres_conf_dir
+
+- name: Check required postgres variables (strings)
+  fail:
+    msg: |
+      Invalid value for variable for '{{ item }}': {{ lookup('vars', item) }}
+
+      Supported types  : String
+      Supported values : Any non-null string
+  when: >-
+    lookup('vars', item) is not string
+    or lookup('vars', item) == 0
+  with_items: "{{ postgres_required_strings }}"
 
 - name: Check variable 'systemd_restart_setting'
   fail:
     msg: |
       Invalid value for variable 'systemd_restart_setting': '{{ systemd_restart_setting }}'
 
-      'systemd_restart_setting' must be one of the following:
-      no, on-success, on-failure, on-abnormal, on-watchdog, on-abort, always.
+      Supported types  : String
+      Supported values : "no", "on-success", "on-failure", "on-abnormal",
+                         "on-watchdog", "on-abort", "always"
   failed_when: >-
-    (systemd_restart_setting not in
+    systemd_restart_setting not in
     ['no', 'on-success', 'on-failure', 'on-abnormal',
     'on-watchdog', 'on-abort', 'always']
     or systemd_restart_setting is not string
-    or systemd_restart_setting == 0)
-    and (postgres_systemd_restart
-    or systemd_restart)
+    or systemd_restart_setting == 0
+  when: >-
+    (postgres_systemd_restart is defined
+    and postgres_systemd_restart)
+    or (systemd_restart is defined
+    and systemd_restart)
